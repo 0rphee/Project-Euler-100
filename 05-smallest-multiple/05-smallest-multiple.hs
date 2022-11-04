@@ -10,39 +10,57 @@ getFactors num = helper num [2..num]
           | n `mod` x == 0 = x : helper (n `div` x) (x:xs)
           | otherwise = helper n xs
         helper _ [] = []
-        
+
 countFactorOcurrences :: [Int] -> [(Int, Int)]
 countFactorOcurrences [] = []
 countFactorOcurrences l = helper l []
   where helper :: [Int] -> [(Int, Int)] -> [(Int, Int)]
-        helper [] ys = ys 
+        helper [] ys = ys
         helper (x:xs) [] = helper xs [(x, 1)]
-        helper (x:xs) (y@(num,count):ys) 
+        helper (x:xs) (y@(num,count):ys)
           | x == num = helper xs ((num, count+1):ys)
           | otherwise = helper xs ((x,1):y:ys)
-   
 
-listOfFactors :: [Int]
-listOfFactors = getFactors 20
-countedF1 = countFactorOcurrences listOfFactors
 
-listOfFactors' :: [Int]
-listOfFactors' = getFactors 18
-countedF2 = countFactorOcurrences listOfFactors'
+myElem :: Foldable t => (Int, Int) -> t (Int, Int) -> Bool
+myElem = any . myEq
+  where myEq (a, _) (x, _) = a == x
 
-jointFactors :: [(Int, Int)]
-jointFactors = countedF1 ++ countedF2
+-- :: (b -> a -> b) -> [a] -> b
 
-getFactorsForMult :: [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)]
-getFactorsForMult [] a = a
-getFactorsForMult (a:as) [] = getFactorsForMult as [a]
-getFactorsForMult (a:as) bs = getFactorsForMult as (biggest:bs)
-  where currentNums = filter (isNum a) bs
-        biggest = foldl1 
-                    (\(x,n1) (y,n2) -> if n1 > n2
-                                       then (x,n1) 
-                                       else (y,n2)) (a:currentNums)
-        
-isNum :: (Int, Int)-> (Int, Int) -> Bool        
-isNum (num, _)(x, _) = num == x 
+getFinalFactors :: [[(Int, Int)]] -> [(Int, Int)]
+getFinalFactors = foldl1 foldingFun
+
+foldingFun :: [(Int, Int)] -> [(Int, Int)] -> [(Int, Int)]
+foldingFun [] a = a
+foldingFun a [] = a
+foldingFun xs ys = helper xs ys
+  where helper [] a = a
+        helper a [] = a
+        helper (a:as) bs =
+          case item of
+            Nothing -> a : helper as bs'
+            Just w -> h a w : helper as bs'
+          where item = myFind a bs
+                h m@(_, t) n@(_, s)
+                  | t > s = m                  
+                  | otherwise = n
+                bs' = filter (not . isNum a) bs
+myFind :: Foldable t => (Int, Int) -> t (Int, Int)-> Maybe (Int, Int)
+myFind y = find (isNum y)
+
+isNum :: (Int, Int)-> (Int, Int) -> Bool
+isNum (num, _)(x, _) = num == x
+
+
+lOfLOfFactors20 :: [[(Int, Int)]]
+lOfLOfFactors20 = [(countFactorOcurrences . getFactors) a | a <- [1..20]]
+
+finalLOfFactors :: [(Int, Int)]
+finalLOfFactors = getFinalFactors lOfLOfFactors20
+
+prodFactorsFolder :: Int -> (Int, Int) -> Int
+prodFactorsFolder a (val, expon) = a * (val ^ expon)
+
+main = print $ foldl prodFactorsFolder 1 finalLOfFactors
 
