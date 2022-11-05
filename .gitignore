@@ -25,3 +25,5 @@ cabal.project.local~
 .DS_Store
 .DS_Store
 06-sum-square-difference/06-sum-square-difference
+07-10001st-prime/07-10001st-prime
+08-largest-product-in-a-series/08-largest-product-in-a-series
