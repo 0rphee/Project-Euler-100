@@ -11,6 +11,11 @@ multiplyDigits = foldl (\prev char-> read [char] * prev) 1
 greatestProduct :: Int
 greatestProduct = maximum $ fmap multiplyDigits numSections
 
+greatestProduct' :: Int
+greatestProduct' = maximum [multiplyDigits a | a <- numSections]
+
+greatestProduct'' :: Int
+greatestProduct'' = maximum [multiplyDigits $ (take 13 . drop nDrop) num | nDrop <- [0 .. length num]]
 main :: IO ()
 main = print greatestProduct
 
