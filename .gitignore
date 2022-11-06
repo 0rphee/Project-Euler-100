@@ -37,3 +37,4 @@ cabal.project.local~
 13-large-sum/13-large-sum
 14-longest-collatz-sequence/14-longest-collatz-sequence
 15-lattice-paths/15-lattice-paths
+16-power-digit-sum/16-power-digit-sum
