@@ -1,39 +1,29 @@
 num = 600851475143 :: Int
 
-getNPrimes :: Int -> [Int]
-getNPrimes numOfPrimesToGet = helper 0 2 [2]
-  where helper :: Int -> Int -> [Int] -> [Int]
-        helper count carry primeList
-          | count < numOfPrimesToGet = helper (count+1) (head nextList) nextList
-          | otherwise = nextList
-          where nextList = nextPrime primeList carry
- 
-
-getPrimesUntil :: Int -> [Int]
-getPrimesUntil maxPrime = helper 2 [2]
-  where helper :: Int -> [Int] -> [Int]
-        helper carry primeList
-          | nextCarry < maxPrime = helper nextCarry nextList
-          | otherwise = tail nextList
-          where nextList = nextPrime primeList carry
-                nextCarry = head nextList
+main :: IO ()
+main = print $ maximum (getPrimeFactors num) 
 
 
-nextPrime :: [Int] -> Int -> [Int]
-nextPrime [] _ = []
-nextPrime primeList carry
-  | any numIsFactor primeList = nextPrime primeList nextNum
-  | otherwise = nextNum:primeList
-  where nextNum = carry + 1
-        numIsFactor y = nextNum `mod` y == 0
-        
-nxPrime :: [Int] -> [Int]
-nxPrime [] = [2]
-nxPrime (x:xs) = nextPrime (x:xs) x
-
-main = print $ getPrimesUntil num
+{-
+[18:22:11] 
+❱❱❱ ./largest-prime-factor
+6857             <----------------------------------------------- actual result, 1.2016283333 hours lol
+[cost 4325.862s] [19:34:19] ./largest-prime-factor
+-}
 
 -- get primes up to a number n with erastosthenes sieve
+
+getPrimeFactors :: Int -> [Int]
+getPrimeFactors num = helper num [2..num]
+  where helper :: Int -> [Int] -> [Int]
+        helper _ [] = []
+        helper n (x:xs)
+          | modulus == 0 = x : helper divisor (x:xs)
+          | otherwise = helper n xs
+          where (divisor, modulus) = n `divMod` x
+          
+newGetPF num = [a | a <- eratosSieve num , num `mod` a == 0 ]          
+
 
 eratosSieve :: Int -> [Int]
 eratosSieve num = h [2..num] 0
@@ -45,5 +35,5 @@ eratosSieve num = h [2..num] 0
           where (x:xs) = drop nDrop ll
                 prev = take nDrop ll
                 (y:ys) = filter (\w->w`mod`x/=0) xs
-
+                
 
