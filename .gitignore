@@ -36,3 +36,4 @@ cabal.project.local~
 12-highly-divisible-triangular-number/12-highly-divisible-triangular-number
 13-large-sum/13-large-sum
 14-longest-collatz-sequence/14-longest-collatz-sequence
+15-lattice-paths/15-lattice-paths
