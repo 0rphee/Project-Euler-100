@@ -8,5 +8,6 @@ num' = read <$> [take 50 (drop nDrop num) | nDrop <- [0, 50 .. length num - 1]]
 
 sumResult = sum num'
 
+main :: IO ()
 main = print $ take 10 (show sumResult)
 
