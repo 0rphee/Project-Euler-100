@@ -38,3 +38,4 @@ cabal.project.local~
 14-longest-collatz-sequence/14-longest-collatz-sequence
 15-lattice-paths/15-lattice-paths
 16-power-digit-sum/16-power-digit-sum
+17-number-letter-counts/17-number-letter-counts
