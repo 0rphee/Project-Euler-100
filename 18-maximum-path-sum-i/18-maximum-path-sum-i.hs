@@ -1,5 +1,6 @@
+import qualified Data.Array as A
 
-pyramid = "75\n\
+pyramid' = "75\n\
           \95 64\n\
           \17 47 82\n\
           \18 35 87 10\n\
@@ -14,4 +15,39 @@ pyramid = "75\n\
           \91 71 52 38 17 14 91 43 58 50 27 29 48\n\
           \63 66 04 68 89 53 67 30 73 16 69 87 40 31\n\
           \04 62 98 27 23 09 70 98 73 93 38 53 60 04 23"
+
+type Lines a = [[a]]
+
+pyramidLines = words <$> lines pyramid'
+
+pyramidForArr :: Lines (Int, Int)
+pyramidForArr = zip [0..] . (read <$>) <$> pyramidLines
+
+linesToArr :: [(Int, e)] -> A.Array Int e
+linesToArr line = A.array (0, length line - 1) line
+
+pyramidArr' :: [(Int, A.Array Int Int)]
+pyramidArr' = zip [0..] (linesToArr <$> pyramidForArr)
+
+pyramidArr :: A.Array Int (A.Array Int Int)
+pyramidArr = linesToArr pyramidArr'
+
+
+next :: (Int, Int) -> A.Array Int (A.Array Int Int) -> (Int, Int)
+next (lineN,  colN) arr
+  | op1 > op2 = (lineN+1, colN)
+  | otherwise = (lineN+1, colN+1)
+  where op1 = (arr A.! (lineN+1)) A.! colN
+        op2 = (arr A.! (lineN+1)) A.! (colN + 1)
+
+
+pyramids = replicate (length pyramidLines -1) pyramidArr
+
+main = print $ scanl next (0,0) pyramids
+
+
+
+
+
+
 
